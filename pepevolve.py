@@ -36,7 +36,7 @@ def main(parent, lamb, sig, filename, skip_aa=None):
                 "Sigma:\t%.5f\nLambda:\t%i\nSkip:\t%s\n\nDist\tSigma\tSequence\n" % (sig, lamb, skip_aa))
         while len(children) < lamb:
             child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
-            while child in children:  # if same child is already present in children
+            while child in children or child == parent:  # if same child is already present in children or is parent
                 child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
             children.append(child)
             f.write(str(dist.round(3)) + "\t" + str(used_sig.round(3)) + "\t" + child + "\n")
