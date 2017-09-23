@@ -1,8 +1,11 @@
 """
 PEPEVOLVE
 
-Evolutionary algorithm to generate generate from a given parent. This script is designed to work with peptide
-sequences. However, any sequence can be provided, given a suitable distance matrix is provided.
+Evolutionary algorithm to generate children from a given parent. This script is designed to work with peptide
+sequences. However, any sequence can be provided, given a suitable distance matrix is referenced.
+
+:Usage:
+python pepevolve.py <parent> --lambd <int> --sigma <float> --matrixfile <file> --skip <str> --seed <int>
 
 :Parameters:
 :param parent: {str} parent string from which you wish to generate children
@@ -12,39 +15,19 @@ sequences. However, any sequence can be provided, given a suitable distance matr
 :param skip: {str} letters (AA) to skip when sampling
 :param seed: {int} random seed to use when sampling (makes runs reproducible)
 
-:Usage:
-python pepevolve.py <parent> --lambd <int> --sigma <float> --matrixfile <file> --skip <str> --seed <int>
-
 :Example:
 python pepevolve.py GLFDIVKKVVGALGSL --lambd 10 --sigma 0.1 --matrixfile grantham.txt --skip CM --seed 42
 
 :Output:
-generated sequences written to the file ``restult.txt``
+generated sequences with corresponding distances and sigma values written to the file ``restult.txt``
 """
 
 import numpy as np
 import argparse
 
 
-def main(parent, lamb, sig, filename, skip_aa=None):
-
-    matrix, aas = load_matrix(filename)
-    children = list()
-
-    with open('result.txt', 'w') as f:
-        f.write("PEPEVOLVE RESULTS\n=================\n\n"
-                "Sigma:\t%.5f\nLambda:\t%i\nSkip:\t%s\n\nDist\tSigma\tSequence\n" % (sig, lamb, skip_aa))
-        while len(children) < lamb:
-            child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
-            while child in children or child == parent:  # if same child is already present in children or is parent
-                child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
-            children.append(child)
-            f.write(str(dist.round(3)) + "\t" + str(used_sig.round(3)) + "\t" + child + "\n")
-
-
 def shift_sigma(sigma):
-    """
-    Sample float from normal distribution to shift the given sigma
+    """ Randomly sample a float from a normal distribution to shift the given sigma
 
     :return: {float} shifted sigma value
     """
@@ -55,8 +38,7 @@ def shift_sigma(sigma):
 
 
 def load_matrix(filename):
-    """
-    Load a smiliarity matrix from the given filename. Values need to be tab-separated with AA as column headers.
+    """ Load a smiliarity matrix from the given filename. Values need to be tab-separated with AA as column headers.
 
     :param filename: {str} filename of the matrix file
 
@@ -66,8 +48,7 @@ def load_matrix(filename):
 
 
 def mutate(parent, sigma, matrix, aas, skip_aa=None):
-    """
-    Mutate a given parent sequence with given sigma and distance matrix to a child through an evolutionary algorithm.
+    """ Mutate a given parent sequence with given sigma and distance matrix to a child through an evolutionary algorithm.
 
     :param parent: {str} parent sequence.
     :param sigma: {float} sigma used to generate gaussian
@@ -105,6 +86,21 @@ def mutate(parent, sigma, matrix, aas, skip_aa=None):
         distance += matrix[indx, mut_indx] ** 2
 
     return child, np.sqrt(distance), sigma
+
+
+def main(parent, lamb, sig, filename, skip_aa=None):
+    matrix, aas = load_matrix(filename)
+    children = list()
+
+    with open('result.txt', 'w') as f:
+        f.write("PEPEVOLVE RESULTS\n=================\n\n"
+                "Sigma:\t%.5f\nLambda:\t%i\nSkip:\t%s\n\nDist\tSigma\tSequence\n" % (sig, lamb, skip_aa))
+        while len(children) < lamb:
+            child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
+            while child in children or child == parent:  # if same child is already present in children or is parent
+                child, dist, used_sig = mutate(parent, sig, matrix, aas, skip_aa)
+            children.append(child)
+            f.write(str(dist.round(3)) + "\t" + str(used_sig.round(3)) + "\t" + child + "\n")
 
 
 if __name__ == '__main__':
