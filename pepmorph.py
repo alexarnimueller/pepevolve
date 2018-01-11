@@ -18,7 +18,7 @@ python pepmorph.py <start> <target> --lambd <int> --sigma <float> --matrixfile <
 :param seed: {int} random seed to use when sampling (makes runs reproducible)
 
 :Example:
-python pepmorph.py KLLKLLKKLLKLLK GLFDIVKKVVGALGSL --lambd 10 --sigma 0.1 --matrixfile grantham.txt --skip CM --seed 42
+python pepmorph.py KLLKLLKKLLKLLKLL GLFDIVKKVVGALGSL --lambd 8 --sigma 0.1 --matrixfile grantham.txt --skip CM --seed 42
 
 :Output:
 generated sequences with corresponding distances and sigma values written to the file ``restult.txt``
