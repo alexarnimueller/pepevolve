@@ -1,5 +1,5 @@
 """
-PEPMORPH
+# PEPMORPH
 
 Evolutionary algorithm to morph two given sequences into each other with the help of an evolutionary algorithm. This
 script is designed to work with peptide sequences. However, any sequence can be provided, given a suitable distance

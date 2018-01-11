@@ -1,5 +1,5 @@
 """
-PEPEVOLVE
+# PEPEVOLVE
 
 Evolutionary algorithm to generate children from a given parent. This script is designed to work with peptide
 sequences. However, any sequence can be provided, given a suitable distance matrix is referenced.
@@ -115,7 +115,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     np.random.seed(seed=args.seed)
-    if len(args.start) == len(args.target):
-        main(parent=args.parent, lamb=args.lambd, sig=args.sigma, filename=args.matrixfile, skip_aa=args.skip)
-    else:
-        raise IOError("The two provided sequences need to have the same length!")
+    main(parent=args.parent, lamb=args.lambd, sig=args.sigma, filename=args.matrixfile, skip_aa=args.skip)
